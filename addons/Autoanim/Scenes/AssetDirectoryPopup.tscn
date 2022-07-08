@@ -1,0 +1,9 @@
+[gd_scene format=2]
+
+[node name="AssetDirectoryPopup" type="FileDialog"]
+margin_right = 488.0
+margin_bottom = 358.0
+popup_exclusive = true
+window_title = "Choose a Directory..."
+resizable = true
+mode = 2

@@ -1,0 +1,66 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Resource",
+"class": "AnimationData",
+"language": "GDScript",
+"path": "res://addons/Autoanim/Resources/AnimationData.gd"
+}, {
+"base": "Node",
+"class": "AnimationGenerator",
+"language": "GDScript",
+"path": "res://addons/Autoanim/AnimationGenerator.gd"
+}, {
+"base": "Resource",
+"class": "CharacterData",
+"language": "GDScript",
+"path": "res://addons/Autoanim/Resources/CharacterData.gd"
+}, {
+"base": "Control",
+"class": "GenerateAnimsGUI",
+"language": "GDScript",
+"path": "res://addons/Autoanim/Scenes/AutoAnimsMainControl.gd"
+}, {
+"base": "KinematicBody2D",
+"class": "OverworldCharacter",
+"language": "GDScript",
+"path": "res://addons/Autoanim/CharacterBase/BaseCharacter.gd"
+}, {
+"base": "Resource",
+"class": "VarsTracker",
+"language": "GDScript",
+"path": "res://addons/Autoanim/Resources/VarsTracker.gd"
+} ]
+_global_script_class_icons={
+"AnimationData": "",
+"AnimationGenerator": "",
+"CharacterData": "",
+"GenerateAnimsGUI": "",
+"OverworldCharacter": "",
+"VarsTracker": ""
+}
+
+[application]
+
+config/name="AutoanimPlugin"
+config/icon="res://icon.png"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/Autoanim/plugin.cfg" )
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"
