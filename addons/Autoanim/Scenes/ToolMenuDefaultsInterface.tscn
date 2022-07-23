@@ -156,3 +156,10 @@ margin_bottom = 199.0
 size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "Save & Close"
+
+[node name="CLOSE_INSTRUCTIONS_LABEL" type="Label" parent="MarginContainer/VBOX_MAIN"]
+margin_top = 203.0
+margin_right = 455.0
+margin_bottom = 217.0
+text = "To close without saving, click outside of this popup."
+align = 1

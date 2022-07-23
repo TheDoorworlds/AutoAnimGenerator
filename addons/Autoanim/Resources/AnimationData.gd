@@ -21,32 +21,32 @@ export var sprite_size :Vector2
 func set_property_value(property :String, value) -> void:
 	match property:
 		"character_name":
-#			print("Property found: ", property)
+
 			character_name = value
 		"states":
-#			print("Property found: ", property)
+
 			states = value
 		"spritesheets":
-#			print("Property found: ", property)
+
 			spritesheets = value
 		"character_animations":
-#			print("Property found: ", property)
+
 			character_animations = value
 		"char_file_name":
-#			print("Property found: ", property)
+
 			char_file_name = value
 		"states_textures_map":
-#			print("Property found: ", property)
+
 			states_textures_map = value
 		"tracks":
-#			print("Property found: ", property)
+
 			tracks = value
 		"sprite_height":
 			sprite_height = value
-#		
+
 		"sprite_width":
 			sprite_width = value
-#		
+
 		"sprite_size":
 			sprite_size = value
 
@@ -61,40 +61,35 @@ func set_property_value(property :String, value) -> void:
 func get_property_value(property :String):
 	match property:
 		"character_name":
-#			print("Property found: ", property)
+
 			return character_name
 		"states":
-#			print("Property found: ", property)
+
 			return states
 		"spritesheets":
-#			print("Property found: ", property)
+
 			return spritesheets
 		"character_animations":
-#			print("Property found: ", property)
+
 			return character_animations
 		"char_file_name":
-#			print("Property found: ", property)
+
 			return char_file_name
 		"states_textures_map":
-#			print("Property found: ", property)
+
 			return states_textures_map
 		"tracks":
-#			print("Property found: ", property)
+
 			return tracks
 		"sprite_height":
 			return sprite_height
-#		
+
 		"sprite_width":
 			return sprite_width
 			
 		"sprite_size":
 			return sprite_size
-#		"test_1":
-#			print("Property found: ", property)
-#			return test_1
-#		"this_is_a_test":
-#			print("Property found: ", property)
-#			return this_is_a_test
+			
 		_:
 			print("Property '%s' Not Found on Animation Data!" % property)
 			print("You may need to update your AnimationDataResource on ", character_name)

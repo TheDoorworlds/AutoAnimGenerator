@@ -62,31 +62,37 @@ func setup_new_character(name :String) -> bool:
 		
 	# Create necessary children for the character to be set up
 		var new_character := OverworldCharacter.new()
-		var nc_anim_player := AnimationPlayer.new()
-		var nc_anim_tree := auto_anim_tree.instance()
-		var nc_sprite := Sprite.new()
-		var nc_coll_shape := CollisionShape2D.new()
-		var nc_coll_shape_shape := CapsuleShape2D.new()
-		var child_adds := [nc_anim_player, nc_anim_tree, nc_coll_shape, nc_sprite]
+		var base_character_instance :OverworldCharacter = base_character.instance()
+		for node in base_character_instance.get_children():
+			var cloned_node = node.duplicate()
+			new_character.add_child(cloned_node)
+			cloned_node.owner = new_character
+#		emit_signal("finished_adding_children_to_new_character")
+#		var nc_anim_player := AnimationPlayer.new()
+#		var nc_anim_tree := auto_anim_tree.instance()
+#		var nc_sprite := Sprite.new()
+#		var nc_coll_shape := CollisionShape2D.new()
+#		var nc_coll_shape_shape := CapsuleShape2D.new()
+#		var child_adds := [nc_anim_player, nc_anim_tree, nc_coll_shape, nc_sprite]
 		var char_filepath := varsTracker.CharacterDirectory.plus_file(name.replace(" ", ""))
-		# Add all children
-		for child in child_adds:
-			new_character.add_child(child)
-			child.owner = new_character
+#		# Add all children
+#		for child in child_adds:
+#			new_character.add_child(child)
+#			child.owner = new_character
 #			emit_signal("finished_adding_children_to_new_character")
 		# Sets character variables on the character
 		new_character.name = name.replace(" ", "")
 		new_character.character_name = name
-		new_character.animPlayer = nc_anim_player
-		new_character.animTree = nc_anim_tree
-		new_character.sprite = nc_sprite
-		new_character.collisionShape2D = nc_coll_shape
-		new_character.collisionShapeShape = nc_coll_shape_shape
+#		new_character.animPlayer = nc_anim_player
+#		new_character.animTree = nc_anim_tree
+#		new_character.sprite = nc_sprite
+#		new_character.collisionShape2D = nc_coll_shape
+#		new_character.collisionShapeShape = nc_coll_shape_shape
 		
 		# Give the CollisionShape2D its shape
-		new_character.collisionShape2D.shape = new_character.collisionShapeShape
+#		new_character.collisionShape2D.shape = new_character.collisionShapeShape
 		# Set the CollisionShape2D's shape to be local to the scene
-		new_character.collisionShapeShape.resource_local_to_scene = true
+#		new_character.collisionShapeShape.resource_local_to_scene = true
 		
 		# Setup the AnimationData resource
 		var animation_data := AnimationData.new()

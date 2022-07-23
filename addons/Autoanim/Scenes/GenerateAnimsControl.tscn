@@ -339,7 +339,7 @@ margin_top = 263.0
 margin_right = 200.0
 margin_bottom = 290.0
 hint_tooltip = "Reset the States of this character to match the BaseCharacter (located in res://addons/Autoanim/CharacterBase/BaseCharacter.tscn)"
-text = "Reset States to Default"
+text = "Reset States List to Default"
 
 [node name="SCROLL_CONTAINER_STATES" type="ScrollContainer" parent="GENERATION_PANEL/HBOX_STATES"]
 margin_left = 204.0
@@ -522,8 +522,8 @@ size_flags_vertical = 3
 custom_styles/bg = ExtResource( 5 )
 
 [node name="DEFAULTS_MARGIN_CONTAINER" type="MarginContainer" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS"]
-margin_left = 18.0
-margin_right = 182.0
+margin_left = 15.0
+margin_right = 185.0
 margin_bottom = 238.0
 size_flags_horizontal = 6
 size_flags_vertical = 3
@@ -535,14 +535,14 @@ custom_constants/margin_bottom = 5
 [node name="VBOX_DEFAULTS_INFORMATION" type="VBoxContainer" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER"]
 margin_left = 5.0
 margin_top = 5.0
-margin_right = 159.0
+margin_right = 165.0
 margin_bottom = 233.0
 size_flags_horizontal = 6
 size_flags_vertical = 3
 custom_constants/separation = 2
 
 [node name="DEFAULT_DIRECTION_SET_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
-margin_right = 154.0
+margin_right = 160.0
 margin_bottom = 14.0
 custom_fonts/font = ExtResource( 7 )
 text = "Direction Set:"
@@ -552,19 +552,19 @@ uppercase = true
 
 [node name="lbl_DefaultDirectionSet" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION" instance=ExtResource( 4 )]
 margin_top = 16.0
-margin_right = 154.0
+margin_right = 160.0
 margin_bottom = 31.0
 text = ""
 
 [node name="grid_DirectionsInSet" type="GridContainer" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
 margin_top = 33.0
-margin_right = 154.0
+margin_right = 160.0
 margin_bottom = 33.0
 columns = 2
 
 [node name="DEFAULT_SPRITE_SIZE_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
 margin_top = 35.0
-margin_right = 154.0
+margin_right = 160.0
 margin_bottom = 49.0
 custom_fonts/font = ExtResource( 7 )
 text = "Default Sprite Size:"
@@ -574,13 +574,13 @@ uppercase = true
 
 [node name="lbl_DefaultSpriteSize" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION" instance=ExtResource( 4 )]
 margin_top = 51.0
-margin_right = 154.0
+margin_right = 160.0
 margin_bottom = 66.0
 text = "0px by 0px"
 
 [node name="DEFAULT_ANIMATIONS_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
 margin_top = 68.0
-margin_right = 154.0
+margin_right = 160.0
 margin_bottom = 82.0
 hint_tooltip = "Determined by the states on BaseCharacter"
 mouse_filter = 1
@@ -592,20 +592,19 @@ uppercase = true
 
 [node name="grid_DefaultAnimations" type="GridContainer" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
 margin_top = 84.0
-margin_right = 154.0
+margin_right = 160.0
 margin_bottom = 84.0
 size_flags_horizontal = 7
 columns = 2
 
 [node name="HBOX_DEFAULT_FRAME_CUONT" type="HBoxContainer" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
 margin_top = 86.0
-margin_right = 154.0
-margin_bottom = 125.0
+margin_right = 160.0
+margin_bottom = 103.0
 
 [node name="DEFAULT_FRAME_COUNT_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION/HBOX_DEFAULT_FRAME_CUONT"]
-margin_top = 11.0
 margin_right = 149.0
-margin_bottom = 28.0
+margin_bottom = 17.0
 custom_fonts/font = ExtResource( 1 )
 text = "Default Frame Count:"
 align = 1
@@ -613,8 +612,9 @@ uppercase = true
 
 [node name="lbl_DefaultFrameCount" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION/HBOX_DEFAULT_FRAME_CUONT" instance=ExtResource( 4 )]
 margin_left = 153.0
-margin_right = 154.0
-margin_bottom = 39.0
+margin_top = 1.0
+margin_right = 160.0
+margin_bottom = 16.0
 text = "0"
 
 [node name="btn_EditDefaults" type="Button" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO"]

@@ -388,17 +388,43 @@ func remove_character(character_name :String) -> bool:
 	toggle_disabled_buttons_for_character()
 	return false
 
+func collect_character_nodes(path :String = base_character_path) -> Array:
+	# Returns all children of the given character as an array
+	var nodes := []
+	var character_instance :OverworldCharacter
+	if name == base_character_path:
+		character_instance = load(base_character_path).instance()
+	else:
+		character_instance = load(path).instance()
+	for child in character_instance.get_children():
+		nodes.append(child)
+	character_instance.free()
+	return nodes
+	
 
+func are_nodes_same_as_default(name :String) -> bool:
+	var character :OverworldCharacter = load(char_filepath).instance()
+	var base_character :OverworldCharacter = load(base_character_path).instance()
+	var base_character_nodes :Array = collect_character_nodes()
+	var character_nodes :Array = collect_character_nodes(char_filepath)
+	for base_node in base_character_nodes:
+		if character_nodes.has(base_node.name):
+			continue
+		else:
+			print(base_node, " does not exist on ", char_filepath)
+			return false
+	
+	character.free()
+	base_character.free()
+	return true
 
 # SIGNAL RECEIVERS
 func _on_AddCharacter_pressed() -> void:
 	_reset_GUI_text(GUI.lbl_AddCharacterResults)
-	char_filename = GUI.line_CharacterName.text.replace(" ","")
 	if char_filename.is_valid_filename():
 		if character_name != null:
 			print("Adding character: ", char_filename)
 			if AnimGenerator.setup_new_character(character_name):
-				ResourceLoader.load("res://addons/Autoanim/Resources/AutoAnimVarsTracker.tres")
 				editor_interface.get_inspector().refresh()
 				GUI.lbl_AddCharacterResults.text = "Character '%s' Successfully Added!" % character_name
 				GUI.lbl_AddCharacterResults.self_modulate = Color.green
@@ -521,7 +547,7 @@ func _on_PullStates_pressed() -> void:
 		AnimGenerator.pack_and_save_character(character)
 
 func _on_ResetStates_pressed() -> void:
-	GUI.ConfirmationDialoguePopup.dialog_text = "Reset states to default on character '%s'?" % character_name
+	GUI.ConfirmationDialoguePopup.dialog_text = "Reset states to default on character '%s'? \n\nDoing so will remove any character-specific states, remove all travel paths, and replace everything with a fresh setup copied from the Base Character." % character_name
 	var editor_viewport_rect = editor_interface.get_viewport().get_visible_rect()
 	GUI.ConfirmationDialoguePopup.popup(
 			Rect2(
