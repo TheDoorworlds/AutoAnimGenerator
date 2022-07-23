@@ -4,12 +4,13 @@
 
 [resource]
 resource_local_to_scene = true
+resource_name = "TestAnimationData"
 script = ExtResource( 1 )
-character_name = ""
-states = [  ]
+character_name = "Test"
+states = [ "Death", "Idle", "Run", "TakeDamage" ]
 spritesheets = [  ]
 character_animations = [ "RESET" ]
-char_file_name = ""
+char_file_name = "Test.tscn"
 states_textures_map = {
 }
 tracks = {

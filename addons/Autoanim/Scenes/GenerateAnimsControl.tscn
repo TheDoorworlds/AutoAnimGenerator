@@ -1,104 +1,18 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=9 format=2]
 
+[ext_resource path="res://addons/Autoanim/Resources/notosans/noto_12_bold.tres" type="DynamicFont" id=1]
 [ext_resource path="res://addons/Autoanim/Resources/Theme/AutoAnimTheme.tres" type="Theme" id=2]
+[ext_resource path="res://addons/Autoanim/Resources/notosans/noto_12pt_reg.tres" type="DynamicFont" id=3]
+[ext_resource path="res://addons/Autoanim/Scenes/lbl_Default.tscn" type="PackedScene" id=4]
+[ext_resource path="res://addons/Autoanim/Resources/Theme/bg_modulates_darkblue.tres" type="StyleBox" id=5]
+[ext_resource path="res://addons/Autoanim/Resources/notosans/NotoSans-Regular.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://addons/Autoanim/Resources/notosans/noto_12pt_bold_subhead.tres" type="DynamicFont" id=7]
 
-[sub_resource type="StyleBoxFlat" id=1]
-bg_color = Color( 0.2, 0.231373, 0.309804, 1 )
-
-[sub_resource type="Shader" id=2]
-code = "shader_type canvas_item;
-render_mode unshaded;
-
-uniform int intensity = 50;
-uniform float precision : hint_range(0,0.02);
-uniform bool flipColors;		//Flip coloring 90 degrees.
-
-//If not using a texture, will blend between these two colors
-uniform vec4 outline_color : hint_color;
-uniform vec4 outline_color_2 : hint_color;
-
-uniform bool use_outline_uv;	//Use the outline_uv for coloring or not. Recomended not, but sometimes might be good.
-
-uniform bool useTexture;		//Use a texture for the coloring
-uniform sampler2D outlineTexture;	//This is the texture that will be used for coloring. Recomended to use a gradient texture, but I guess anything else works.
-
-varying vec2 o;
-varying vec2 f;
-
-void vertex()
-{
-	//Expands the vertexes so we have space to draw the outline if we were on the edge.
-	o = VERTEX;
-	vec2 uv = (UV - 0.5);
-	VERTEX += uv * float(intensity);
-	f = VERTEX;
-}
-
-void fragment()
-{
-	ivec2 t = textureSize(TEXTURE, 0);
-	vec2 regular_uv;
-	regular_uv.x = UV.x + (f.x - o.x)/float(t.x);
-	regular_uv.y = UV.y + (f.y - o.y)/float(t.y);
-	
-	vec4 regular_color = texture(TEXTURE, regular_uv);
-	
-	if((regular_uv.x < 0.0 || regular_uv.x > 1.0) || (regular_uv.y < 0.0 || regular_uv.y > 1.0) || regular_color.a <=0.25){
-		regular_color = vec4(0.0); 
-	}
-	
-	vec2 ps = TEXTURE_PIXEL_SIZE * float(intensity) * precision;
-	
-	vec4 final_color = regular_color;
-	if (regular_color.a <= 0.0)
-	{
-		for(int x = -1; x <= 1; x += 1){
-			for(int y = -1; y <= 1; y += 1){
-				
-				//Get the X and Y offset from this
-				if (x==0 && y==0)
-					continue;
-					
-				vec2 outline_uv = regular_uv + vec2(float(x) * ps.x, float(y) * ps.y); 
-				
-				//Sample here, if we are out of bounds then fail
-				vec4 outline_sample = texture(TEXTURE, outline_uv);
-				if((outline_uv.x < 0.0 || outline_uv.x > 1.0) || (outline_uv.y < 0.0 || outline_uv.y > 1.0)){
-					//We aren't a real color
-					outline_sample = vec4(0);
-				}
-				
-				vec2 final_uv = use_outline_uv ? outline_uv : UV;	//get the UV we will be using, controlled via use_outline_uv
-				
-				//Is our sample empty? Is there something nearby?
-				if(outline_sample.a > final_color.a){
-					if(!useTexture)	//If we're not using a texture
-					{
-						final_color = mix(outline_color, outline_color_2, flipColors ? final_uv.y : final_uv.x);
-					}
-					else
-					{
-						vec2 uv = flipColors ? vec2(final_uv.y, final_uv.x) : final_uv;
-						vec4 outline = texture(outlineTexture, uv);
-						
-						final_color = outline;
-					}
-				}
-			}
-		}
-	}
-	COLOR = final_color; 
-}"
-
-[sub_resource type="ShaderMaterial" id=3]
-shader = SubResource( 2 )
-shader_param/intensity = 50
-shader_param/precision = null
-shader_param/flipColors = null
-shader_param/outline_color = Color( 0.6, 0.6, 0.6, 1 )
-shader_param/outline_color_2 = Color( 0, 0, 0, 1 )
-shader_param/use_outline_uv = null
-shader_param/useTexture = false
+[sub_resource type="DynamicFont" id=1]
+size = 12
+extra_spacing_top = -4
+extra_spacing_bottom = -4
+font_data = ExtResource( 6 )
 
 [node name="GenerateAnimsControl" type="HBoxContainer"]
 anchor_right = 1.0
@@ -106,7 +20,7 @@ anchor_bottom = 1.0
 theme = ExtResource( 2 )
 
 [node name="CHARACTER_LIST_PANEL" type="Panel" parent="."]
-margin_right = 255.0
+margin_right = 204.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -117,76 +31,82 @@ anchor_bottom = 1.0
 size_flags_horizontal = 3
 
 [node name="CHARACTER_LIST_HEADER" type="Label" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST"]
-margin_right = 255.0
-margin_bottom = 31.0
+margin_right = 204.0
+margin_bottom = 37.0
+custom_fonts/font = ExtResource( 1 )
 text = "CHARACTER LIST
 "
 align = 1
 valign = 1
 
-[node name="opt_CharacterList" type="ScrollContainer" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST"]
-margin_top = 35.0
-margin_right = 255.0
-margin_bottom = 554.0
+[node name="CHARCTER_LIST_SCROLL_CONTAINER" type="ScrollContainer" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST"]
+margin_top = 41.0
+margin_right = 204.0
+margin_bottom = 544.0
 size_flags_vertical = 3
 
-[node name="vbox_CharacterList" type="VBoxContainer" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST/opt_CharacterList"]
-margin_right = 255.0
-margin_bottom = 519.0
+[node name="vbox_CharacterList" type="VBoxContainer" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST/CHARCTER_LIST_SCROLL_CONTAINER"]
+margin_right = 204.0
+margin_bottom = 503.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="hbox_Counters" type="HBoxContainer" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST"]
-margin_top = 558.0
-margin_right = 255.0
-margin_bottom = 572.0
+[node name="HBOX_COUNTERS" type="HBoxContainer" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST"]
+margin_top = 548.0
+margin_right = 204.0
+margin_bottom = 569.0
 
-[node name="CHARACTER_COUNT_HEADER" type="Label" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST/hbox_Counters"]
-margin_right = 178.0
-margin_bottom = 14.0
+[node name="CHARACTER_COUNT_HEADER" type="Label" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST/HBOX_COUNTERS"]
+margin_right = 100.0
+margin_bottom = 21.0
 size_flags_horizontal = 3
+custom_fonts/font = SubResource( 1 )
 text = "Total Number of Characters:"
 align = 2
+autowrap = true
 
-[node name="lbl_CharacterCount" type="Label" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST/hbox_Counters"]
-margin_left = 182.0
-margin_right = 255.0
-margin_bottom = 14.0
+[node name="lbl_CharacterCount" type="Label" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST/HBOX_COUNTERS"]
+margin_left = 104.0
+margin_top = 2.0
+margin_right = 204.0
+margin_bottom = 19.0
 size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 3 )
+autowrap = true
 
 [node name="btn_RefreshCharacterList" type="Button" parent="CHARACTER_LIST_PANEL/CHARACTER_LIST"]
-margin_top = 576.0
-margin_right = 255.0
+margin_top = 573.0
+margin_right = 204.0
 margin_bottom = 600.0
 hint_tooltip = "Click me if the list does not accurately reflect the characters you have made."
 text = "Refresh Character List"
 
 [node name="GENERATION_PANEL" type="VBoxContainer" parent="."]
-margin_left = 259.0
+margin_left = 208.0
 margin_right = 1024.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 3.0
+size_flags_stretch_ratio = 4.0
 
-[node name="hbox_Directories" type="HBoxContainer" parent="GENERATION_PANEL"]
-margin_right = 765.0
-margin_bottom = 56.0
+[node name="HBOX_DIRECTORIES" type="HBoxContainer" parent="GENERATION_PANEL"]
+margin_right = 816.0
+margin_bottom = 59.0
 size_flags_horizontal = 3
 
-[node name="vbox_CharacterDirectory" type="VBoxContainer" parent="GENERATION_PANEL/hbox_Directories"]
-margin_right = 376.0
-margin_bottom = 56.0
+[node name="VBOX_CHARACTER_DIRECTORY" type="VBoxContainer" parent="GENERATION_PANEL/HBOX_DIRECTORIES"]
+margin_right = 402.0
+margin_bottom = 59.0
 size_flags_horizontal = 3
 
-[node name="btn_SetCharacterDirectory" type="Button" parent="GENERATION_PANEL/hbox_Directories/vbox_CharacterDirectory"]
-margin_right = 376.0
-margin_bottom = 24.0
+[node name="btn_SetCharacterDirectory" type="Button" parent="GENERATION_PANEL/HBOX_DIRECTORIES/VBOX_CHARACTER_DIRECTORY"]
+margin_right = 402.0
+margin_bottom = 27.0
 text = "Set Character Directory..."
 
-[node name="lbl_CharacterDirectory" type="Label" parent="GENERATION_PANEL/hbox_Directories/vbox_CharacterDirectory"]
-margin_top = 28.0
-margin_right = 376.0
-margin_bottom = 56.0
+[node name="lbl_CharacterDirectory" type="Label" parent="GENERATION_PANEL/HBOX_DIRECTORIES/VBOX_CHARACTER_DIRECTORY"]
+margin_top = 31.0
+margin_right = 402.0
+margin_bottom = 59.0
 grow_vertical = 2
 rect_min_size = Vector2( 0, 28 )
 size_flags_horizontal = 7
@@ -196,26 +116,26 @@ align = 1
 autowrap = true
 max_lines_visible = 2
 
-[node name="HSeparator" type="VSeparator" parent="GENERATION_PANEL/hbox_Directories"]
-margin_left = 380.0
-margin_right = 384.0
-margin_bottom = 56.0
+[node name="HSeparator" type="VSeparator" parent="GENERATION_PANEL/HBOX_DIRECTORIES"]
+margin_left = 406.0
+margin_right = 410.0
+margin_bottom = 59.0
 
-[node name="vbox_AssetDirectory" type="VBoxContainer" parent="GENERATION_PANEL/hbox_Directories"]
-margin_left = 388.0
-margin_right = 765.0
-margin_bottom = 56.0
+[node name="VBOX_ASSET_DIRECTORY" type="VBoxContainer" parent="GENERATION_PANEL/HBOX_DIRECTORIES"]
+margin_left = 414.0
+margin_right = 816.0
+margin_bottom = 59.0
 size_flags_horizontal = 3
 
-[node name="btn_SetAssetDirectory" type="Button" parent="GENERATION_PANEL/hbox_Directories/vbox_AssetDirectory"]
-margin_right = 377.0
-margin_bottom = 24.0
+[node name="btn_SetAssetDirectory" type="Button" parent="GENERATION_PANEL/HBOX_DIRECTORIES/VBOX_ASSET_DIRECTORY"]
+margin_right = 402.0
+margin_bottom = 27.0
 text = "Set Asset Directory..."
 
-[node name="lbl_AssetDirectory" type="Label" parent="GENERATION_PANEL/hbox_Directories/vbox_AssetDirectory"]
-margin_top = 28.0
-margin_right = 377.0
-margin_bottom = 56.0
+[node name="lbl_AssetDirectory" type="Label" parent="GENERATION_PANEL/HBOX_DIRECTORIES/VBOX_ASSET_DIRECTORY"]
+margin_top = 31.0
+margin_right = 402.0
+margin_bottom = 59.0
 grow_vertical = 2
 rect_min_size = Vector2( 0, 28 )
 size_flags_horizontal = 7
@@ -227,114 +147,129 @@ autowrap = true
 max_lines_visible = 2
 
 [node name="HSeparator" type="HSeparator" parent="GENERATION_PANEL"]
-margin_top = 60.0
-margin_right = 765.0
-margin_bottom = 70.0
+margin_top = 63.0
+margin_right = 816.0
+margin_bottom = 73.0
 custom_constants/separation = 10
 
-[node name="hbox_CharacterManagement" type="HBoxContainer" parent="GENERATION_PANEL"]
-margin_top = 74.0
-margin_right = 765.0
-margin_bottom = 228.0
+[node name="HBOX_CHARACTER_MANAGEMENT" type="HBoxContainer" parent="GENERATION_PANEL"]
+margin_top = 77.0
+margin_right = 816.0
+margin_bottom = 212.0
 
-[node name="vbox_CharacterInfo" type="VBoxContainer" parent="GENERATION_PANEL/hbox_CharacterManagement"]
-margin_right = 380.0
-margin_bottom = 154.0
+[node name="VBOX_CHARACTER_INFO_INPUT" type="VBoxContainer" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT"]
+margin_right = 406.0
+margin_bottom = 135.0
 size_flags_horizontal = 3
 
-[node name="hbox_CharacterName" type="HBoxContainer" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo"]
-margin_right = 380.0
+[node name="HBOX_CHARACTER_NAME" type="HBoxContainer" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT"]
+margin_right = 406.0
 margin_bottom = 24.0
 
-[node name="lbl_CharacterName" type="Label" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo/hbox_CharacterName"]
+[node name="CHARACTER_NAME_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT/HBOX_CHARACTER_NAME"]
 margin_top = 5.0
 margin_right = 106.0
 margin_bottom = 19.0
 text = "Character Name:"
 
-[node name="line_CharacterName" type="LineEdit" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo/hbox_CharacterName"]
+[node name="line_CharacterName" type="LineEdit" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT/HBOX_CHARACTER_NAME"]
 margin_left = 110.0
-margin_right = 380.0
+margin_right = 406.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 placeholder_text = "Enter the Character's Name"
 caret_blink = true
 caret_blink_speed = 0.5
 
-[node name="hbox_CharacterButtons" type="HBoxContainer" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo"]
+[node name="HBOX_CHARACTER_BUTTONS" type="HBoxContainer" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT"]
 margin_top = 28.0
-margin_right = 380.0
-margin_bottom = 52.0
+margin_right = 406.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 
-[node name="btn_AddCharacter" type="Button" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo/hbox_CharacterButtons"]
-margin_right = 188.0
-margin_bottom = 24.0
+[node name="btn_AddCharacter" type="Button" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT/HBOX_CHARACTER_BUTTONS"]
+margin_right = 201.0
+margin_bottom = 27.0
 hint_tooltip = "Add a character to your project"
 size_flags_horizontal = 3
 text = "Add Character"
 
-[node name="btn_PullCharacter" type="Button" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo/hbox_CharacterButtons"]
-margin_left = 192.0
-margin_right = 380.0
-margin_bottom = 24.0
+[node name="btn_PullCharacter" type="Button" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT/HBOX_CHARACTER_BUTTONS"]
+margin_left = 205.0
+margin_right = 406.0
+margin_bottom = 27.0
 hint_tooltip = "Pull the character's information"
 size_flags_horizontal = 3
 disabled = true
 text = "Pull Character Info"
 
-[node name="lbl_AddCharacterResults" type="Label" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo"]
-margin_top = 56.0
-margin_right = 380.0
-margin_bottom = 70.0
+[node name="lbl_AddCharacterResults" type="Label" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT"]
+margin_top = 59.0
+margin_right = 406.0
+margin_bottom = 73.0
 
-[node name="btn_OpenCharacterScene" type="Button" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo"]
-margin_top = 74.0
-margin_right = 380.0
-margin_bottom = 98.0
+[node name="HBOX_OPEN_PULL_RESET" type="HBoxContainer" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT"]
+margin_top = 77.0
+margin_right = 406.0
+margin_bottom = 104.0
+
+[node name="btn_OpenCharacterScene" type="Button" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT/HBOX_OPEN_PULL_RESET"]
+margin_right = 201.0
+margin_bottom = 27.0
 hint_tooltip = "Open the character's scene"
+size_flags_horizontal = 3
 disabled = true
 text = "Open Character Scene"
 
-[node name="btn_RemoveCharacter" type="Button" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo"]
-margin_top = 102.0
+[node name="btn_PullStates" type="Button" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT/HBOX_OPEN_PULL_RESET"]
+margin_left = 205.0
+margin_right = 406.0
+margin_bottom = 27.0
+hint_tooltip = "Forces and update to the states list below."
+size_flags_horizontal = 3
+text = "Pull States"
+
+[node name="btn_ResetCharacter" type="Button" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT/HBOX_OPEN_PULL_RESET"]
+visible = false
+margin_left = 262.0
 margin_right = 380.0
-margin_bottom = 126.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+text = "Reset Character"
+
+[node name="btn_RemoveCharacter" type="Button" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_INPUT"]
+margin_top = 108.0
+margin_right = 406.0
+margin_bottom = 135.0
 hint_tooltip = "Remove the character from your project"
 disabled = true
 text = "Remove Character"
 
-[node name="btn_PullStates" type="Button" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo"]
-margin_top = 130.0
-margin_right = 380.0
-margin_bottom = 154.0
-size_flags_horizontal = 3
-text = "Update States"
-
-[node name="vbox_CharacterInfo2" type="VBoxContainer" parent="GENERATION_PANEL/hbox_CharacterManagement"]
-margin_left = 384.0
-margin_right = 765.0
-margin_bottom = 154.0
+[node name="VBOX_CHARACTER_INFO_OUTPUT" type="VBoxContainer" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT"]
+margin_left = 410.0
+margin_right = 816.0
+margin_bottom = 135.0
 size_flags_horizontal = 3
 
-[node name="CHARACTER_INFO_HEADER" type="Label" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo2"]
-margin_right = 381.0
-margin_bottom = 14.0
+[node name="lbl_CharacterInfoHeader" type="Label" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_OUTPUT"]
+margin_right = 406.0
+margin_bottom = 17.0
+custom_fonts/font = ExtResource( 1 )
 text = "Character Info for: "
 
-[node name="OutputPane" type="ScrollContainer" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo2"]
+[node name="OUTPUT_SCROLL_PANEL" type="ScrollContainer" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_OUTPUT"]
 self_modulate = Color( 0.74902, 0.74902, 0.74902, 1 )
-margin_top = 18.0
-margin_right = 381.0
-margin_bottom = 154.0
+margin_top = 21.0
+margin_right = 406.0
+margin_bottom = 135.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_styles/bg = SubResource( 1 )
+custom_styles/bg = ExtResource( 5 )
 scroll_horizontal_enabled = false
 
-[node name="MarginContainer" type="MarginContainer" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo2/OutputPane"]
-margin_right = 381.0
-margin_bottom = 136.0
+[node name="OUTPUT_MARGIN_CONTAINER" type="MarginContainer" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_OUTPUT/OUTPUT_SCROLL_PANEL"]
+margin_right = 406.0
+margin_bottom = 114.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_right = 3
@@ -342,66 +277,56 @@ custom_constants/margin_top = 3
 custom_constants/margin_left = 3
 custom_constants/margin_bottom = 3
 
-[node name="lbl_CharacterOutputText" type="Label" parent="GENERATION_PANEL/hbox_CharacterManagement/vbox_CharacterInfo2/OutputPane/MarginContainer"]
+[node name="lbl_CharacterOutputText" type="Label" parent="GENERATION_PANEL/HBOX_CHARACTER_MANAGEMENT/VBOX_CHARACTER_INFO_OUTPUT/OUTPUT_SCROLL_PANEL/OUTPUT_MARGIN_CONTAINER"]
 margin_left = 3.0
 margin_top = 3.0
-margin_right = 378.0
-margin_bottom = 133.0
+margin_right = 403.0
+margin_bottom = 111.0
 size_flags_horizontal = 3
 size_flags_vertical = 7
 autowrap = true
 
-[node name="StatesHBOX" type="HBoxContainer" parent="GENERATION_PANEL"]
-visible = false
-margin_top = 204.0
-margin_right = 765.0
-margin_bottom = 228.0
-size_flags_horizontal = 3
-
-[node name="opt_StatesDropdown" type="OptionButton" parent="GENERATION_PANEL/StatesHBOX"]
-margin_left = 257.0
-margin_right = 765.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.0
-text = "Choose a State to Work On..."
-
 [node name="HSeparator2" type="HSeparator" parent="GENERATION_PANEL"]
-margin_top = 232.0
-margin_right = 765.0
-margin_bottom = 242.0
+margin_top = 216.0
+margin_right = 816.0
+margin_bottom = 226.0
 custom_constants/separation = 10
 
-[node name="hbox_States" type="HBoxContainer" parent="GENERATION_PANEL"]
-margin_top = 246.0
-margin_right = 765.0
-margin_bottom = 350.0
-
-[node name="STATES_PANEL" type="Panel" parent="GENERATION_PANEL/hbox_States"]
-margin_right = 152.0
-margin_bottom = 104.0
+[node name="HBOX_STATES" type="HBoxContainer" parent="GENERATION_PANEL"]
+margin_top = 230.0
+margin_right = 816.0
+margin_bottom = 520.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="vbox_CurrentStates" type="VBoxContainer" parent="GENERATION_PANEL/hbox_States/STATES_PANEL"]
+[node name="STATES_PANEL" type="Panel" parent="GENERATION_PANEL/HBOX_STATES"]
+margin_right = 200.0
+margin_bottom = 290.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBOX_CURRENT_STATES" type="VBoxContainer" parent="GENERATION_PANEL/HBOX_STATES/STATES_PANEL"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="ANIMATION_STATES_HEADER" type="Label" parent="GENERATION_PANEL/hbox_States/STATES_PANEL/vbox_CurrentStates"]
-margin_right = 152.0
-margin_bottom = 14.0
+[node name="ANIMATION_STATES_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/STATES_PANEL/VBOX_CURRENT_STATES"]
+margin_right = 200.0
+margin_bottom = 17.0
 hint_tooltip = "List of the current states that exist as Nodes within the StateMachine on your AnimationTree for this character."
 mouse_filter = 1
+custom_fonts/font = ExtResource( 1 )
 text = "animation states"
 align = 1
 autowrap = true
 uppercase = true
 
-[node name="grid_StatesButtonGrid" type="GridContainer" parent="GENERATION_PANEL/hbox_States/STATES_PANEL/vbox_CurrentStates"]
-margin_left = 76.0
-margin_top = 18.0
-margin_right = 76.0
-margin_bottom = 104.0
+[node name="grid_StatesButtonGrid" type="GridContainer" parent="GENERATION_PANEL/HBOX_STATES/STATES_PANEL/VBOX_CURRENT_STATES"]
+margin_left = 100.0
+margin_top = 21.0
+margin_right = 100.0
+margin_bottom = 259.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
@@ -409,110 +334,313 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 columns = 2
 
-[node name="vbox_StatesInformation" type="VBoxContainer" parent="GENERATION_PANEL/hbox_States"]
-margin_left = 156.0
-margin_right = 765.0
-margin_bottom = 104.0
+[node name="btn_ResetStates" type="Button" parent="GENERATION_PANEL/HBOX_STATES/STATES_PANEL/VBOX_CURRENT_STATES"]
+margin_top = 263.0
+margin_right = 200.0
+margin_bottom = 290.0
+hint_tooltip = "Reset the States of this character to match the BaseCharacter (located in res://addons/Autoanim/CharacterBase/BaseCharacter.tscn)"
+text = "Reset States to Default"
+
+[node name="SCROLL_CONTAINER_STATES" type="ScrollContainer" parent="GENERATION_PANEL/HBOX_STATES"]
+margin_left = 204.0
+margin_right = 604.0
+margin_bottom = 290.0
 size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="HBOX_STATES_INFORMATION" type="HBoxContainer" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES"]
+margin_right = 400.0
+margin_bottom = 290.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBOX_CURRENT_STATE_INFORMATION" type="VBoxContainer" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION"]
+margin_right = 400.0
+margin_bottom = 290.0
+size_flags_horizontal = 7
 size_flags_vertical = 5
-size_flags_stretch_ratio = 4.0
+size_flags_stretch_ratio = 2.0
 
-[node name="Label" type="Label" parent="GENERATION_PANEL/hbox_States/vbox_StatesInformation"]
-margin_right = 609.0
-margin_bottom = 14.0
+[node name="lbl_StateInfoHeader" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION"]
+margin_right = 400.0
+margin_bottom = 17.0
+custom_fonts/font = ExtResource( 1 )
+text = "INFO FOR STATE: "
 
-[node name="grid_StateDetails" type="GridContainer" parent="GENERATION_PANEL/hbox_States/vbox_StatesInformation"]
-material = SubResource( 3 )
-margin_top = 18.0
-margin_right = 609.0
-margin_bottom = 50.0
+[node name="grid_StateDetails" type="GridContainer" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION"]
+margin_top = 21.0
+margin_right = 400.0
+margin_bottom = 100.0
 size_flags_horizontal = 3
 columns = 4
 
-[node name="BLEND_TREE_NODE_COUNT_HEADER" type="Label" parent="GENERATION_PANEL/hbox_States/vbox_StatesInformation/grid_StateDetails"]
-margin_right = 152.0
-margin_bottom = 14.0
+[node name="SPRITE_SIZE_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/grid_StateDetails"]
+margin_right = 134.0
+margin_bottom = 17.0
+custom_fonts/font = ExtResource( 3 )
+text = "Sprite Size:"
+align = 2
+
+[node name="lbl_SpriteSize" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/grid_StateDetails"]
+margin_left = 138.0
+margin_right = 200.0
+margin_bottom = 17.0
+custom_fonts/font = ExtResource( 3 )
+text = "0px by 0 px"
+
+[node name="FRAME_COUNT_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/grid_StateDetails"]
+margin_left = 204.0
+margin_right = 354.0
+margin_bottom = 17.0
+custom_fonts/font = ExtResource( 3 )
+text = "Frame Count:"
+align = 2
+
+[node name="lbl_FrameCount" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/grid_StateDetails"]
+margin_left = 358.0
+margin_right = 400.0
+margin_bottom = 17.0
+custom_fonts/font = ExtResource( 3 )
+text = "0"
+
+[node name="BLEND_TREE_NODE_COUNT_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/grid_StateDetails"]
+margin_top = 21.0
+margin_right = 134.0
+margin_bottom = 38.0
 size_flags_horizontal = 3
 size_flags_vertical = 6
+custom_fonts/font = ExtResource( 3 )
 text = "Blend Tree Node Count:"
 align = 2
 valign = 1
 
-[node name="lbl_BlendTreeNodeCount" type="Label" parent="GENERATION_PANEL/hbox_States/vbox_StatesInformation/grid_StateDetails"]
-margin_left = 156.0
-margin_right = 294.0
-margin_bottom = 14.0
+[node name="lbl_BlendTreeNodeCount" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/grid_StateDetails"]
+margin_left = 138.0
+margin_top = 21.0
+margin_right = 200.0
+margin_bottom = 38.0
 size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 3 )
 text = "0"
 
-[node name="BLEND_TREE_TRIS_COUNT_HEADER" type="Label" parent="GENERATION_PANEL/hbox_States/vbox_StatesInformation/grid_StateDetails"]
-margin_left = 298.0
-margin_right = 466.0
-margin_bottom = 14.0
+[node name="BLEND_TREE_TRIS_COUNT_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/grid_StateDetails"]
+margin_left = 204.0
+margin_top = 21.0
+margin_right = 354.0
+margin_bottom = 38.0
 size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 3 )
 text = "Blend Tree Triangle Count:"
 align = 2
 
-[node name="lbl_BlendTreeTrisCount" type="Label" parent="GENERATION_PANEL/hbox_States/vbox_StatesInformation/grid_StateDetails"]
-margin_left = 470.0
-margin_right = 608.0
-margin_bottom = 14.0
+[node name="lbl_BlendTreeTrisCount" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/grid_StateDetails"]
+margin_left = 358.0
+margin_top = 21.0
+margin_right = 400.0
+margin_bottom = 38.0
 size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 3 )
 text = "0"
 
-[node name="TRANSITIONS_HEADER" type="Label" parent="GENERATION_PANEL/hbox_States/vbox_StatesInformation/grid_StateDetails"]
-margin_top = 18.0
-margin_right = 152.0
-margin_bottom = 32.0
+[node name="TRANSITIONS_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/grid_StateDetails"]
+margin_top = 52.0
+margin_right = 134.0
+margin_bottom = 69.0
+custom_fonts/font = ExtResource( 3 )
 text = "Transitions:"
 align = 2
 valign = 1
 
-[node name="lbl_StateTransitions" type="Label" parent="GENERATION_PANEL/hbox_States/vbox_StatesInformation/grid_StateDetails"]
-margin_left = 156.0
-margin_top = 18.0
-margin_right = 294.0
-margin_bottom = 32.0
+[node name="lbl_StateTransitions" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/grid_StateDetails"]
+margin_left = 138.0
+margin_top = 42.0
+margin_right = 200.0
+margin_bottom = 79.0
+custom_fonts/font = ExtResource( 3 )
 text = "Idle : automatic"
 autowrap = true
 
-[node name="hbox_Texture" type="HBoxContainer" parent="GENERATION_PANEL/hbox_States/vbox_StatesInformation"]
-margin_top = 54.0
-margin_right = 609.0
-margin_bottom = 104.0
+[node name="HBOX_TEXTURE" type="HBoxContainer" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION"]
+margin_top = 104.0
+margin_right = 400.0
+margin_bottom = 228.0
+size_flags_vertical = 3
 
-[node name="TEXTURE_HEADER" type="Label" parent="GENERATION_PANEL/hbox_States/vbox_StatesInformation/hbox_Texture"]
-margin_top = 18.0
+[node name="TEXTURE_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/HBOX_TEXTURE"]
+margin_top = 55.0
 margin_right = 52.0
-margin_bottom = 32.0
+margin_bottom = 69.0
 size_flags_vertical = 6
 text = "Texture:"
+align = 2
 valign = 1
 
-[node name="trect_StateTexture" type="TextureRect" parent="GENERATION_PANEL/hbox_States/vbox_StatesInformation/hbox_Texture"]
+[node name="trect_StateTexture" type="TextureRect" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION/HBOX_TEXTURE"]
 margin_left = 56.0
 margin_right = 106.0
-margin_bottom = 50.0
+margin_bottom = 124.0
 rect_min_size = Vector2( 50, 50 )
 
+[node name="btn_EditState" type="Button" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION"]
+margin_top = 232.0
+margin_right = 400.0
+margin_bottom = 259.0
+text = "Edit State"
+
+[node name="btn_ResetStatetoDefault" type="Button" parent="GENERATION_PANEL/HBOX_STATES/SCROLL_CONTAINER_STATES/HBOX_STATES_INFORMATION/VBOX_CURRENT_STATE_INFORMATION"]
+margin_top = 263.0
+margin_right = 400.0
+margin_bottom = 290.0
+text = "RESET STATE TO DEFAULT"
+
+[node name="VSeparator" type="VSeparator" parent="GENERATION_PANEL/HBOX_STATES"]
+margin_left = 608.0
+margin_right = 612.0
+margin_bottom = 290.0
+
+[node name="VBOX_DEFAULTS_INFO" type="VBoxContainer" parent="GENERATION_PANEL/HBOX_STATES"]
+margin_left = 616.0
+margin_right = 816.0
+margin_bottom = 290.0
+size_flags_horizontal = 7
+
+[node name="DEFAULTS_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO"]
+margin_right = 200.0
+margin_bottom = 17.0
+custom_fonts/font = ExtResource( 1 )
+text = "DEFAULTS"
+align = 1
+uppercase = true
+
+[node name="SCROLL_CONTAINER_DEFAULTS" type="ScrollContainer" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO"]
+margin_top = 21.0
+margin_right = 200.0
+margin_bottom = 259.0
+size_flags_horizontal = 7
+size_flags_vertical = 3
+custom_styles/bg = ExtResource( 5 )
+
+[node name="DEFAULTS_MARGIN_CONTAINER" type="MarginContainer" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS"]
+margin_left = 18.0
+margin_right = 182.0
+margin_bottom = 238.0
+size_flags_horizontal = 6
+size_flags_vertical = 3
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 5
+
+[node name="VBOX_DEFAULTS_INFORMATION" type="VBoxContainer" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 159.0
+margin_bottom = 233.0
+size_flags_horizontal = 6
+size_flags_vertical = 3
+custom_constants/separation = 2
+
+[node name="DEFAULT_DIRECTION_SET_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
+margin_right = 154.0
+margin_bottom = 14.0
+custom_fonts/font = ExtResource( 7 )
+text = "Direction Set:"
+align = 1
+valign = 2
+uppercase = true
+
+[node name="lbl_DefaultDirectionSet" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION" instance=ExtResource( 4 )]
+margin_top = 16.0
+margin_right = 154.0
+margin_bottom = 31.0
+text = ""
+
+[node name="grid_DirectionsInSet" type="GridContainer" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
+margin_top = 33.0
+margin_right = 154.0
+margin_bottom = 33.0
+columns = 2
+
+[node name="DEFAULT_SPRITE_SIZE_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
+margin_top = 35.0
+margin_right = 154.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 7 )
+text = "Default Sprite Size:"
+align = 1
+valign = 2
+uppercase = true
+
+[node name="lbl_DefaultSpriteSize" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION" instance=ExtResource( 4 )]
+margin_top = 51.0
+margin_right = 154.0
+margin_bottom = 66.0
+text = "0px by 0px"
+
+[node name="DEFAULT_ANIMATIONS_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
+margin_top = 68.0
+margin_right = 154.0
+margin_bottom = 82.0
+hint_tooltip = "Determined by the states on BaseCharacter"
+mouse_filter = 1
+custom_fonts/font = ExtResource( 7 )
+text = "Default Animations:"
+align = 1
+valign = 2
+uppercase = true
+
+[node name="grid_DefaultAnimations" type="GridContainer" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
+margin_top = 84.0
+margin_right = 154.0
+margin_bottom = 84.0
+size_flags_horizontal = 7
+columns = 2
+
+[node name="HBOX_DEFAULT_FRAME_CUONT" type="HBoxContainer" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION"]
+margin_top = 86.0
+margin_right = 154.0
+margin_bottom = 125.0
+
+[node name="DEFAULT_FRAME_COUNT_HEADER" type="Label" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION/HBOX_DEFAULT_FRAME_CUONT"]
+margin_top = 11.0
+margin_right = 149.0
+margin_bottom = 28.0
+custom_fonts/font = ExtResource( 1 )
+text = "Default Frame Count:"
+align = 1
+uppercase = true
+
+[node name="lbl_DefaultFrameCount" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO/SCROLL_CONTAINER_DEFAULTS/DEFAULTS_MARGIN_CONTAINER/VBOX_DEFAULTS_INFORMATION/HBOX_DEFAULT_FRAME_CUONT" instance=ExtResource( 4 )]
+margin_left = 153.0
+margin_right = 154.0
+margin_bottom = 39.0
+text = "0"
+
+[node name="btn_EditDefaults" type="Button" parent="GENERATION_PANEL/HBOX_STATES/VBOX_DEFAULTS_INFO"]
+margin_top = 263.0
+margin_right = 200.0
+margin_bottom = 290.0
+text = "Edit Defaults"
+
 [node name="btn_GenerateAnimations" type="Button" parent="GENERATION_PANEL"]
-margin_top = 354.0
-margin_right = 765.0
-margin_bottom = 378.0
+margin_top = 524.0
+margin_right = 816.0
+margin_bottom = 551.0
 disabled = true
 text = "Generate Animations"
 
 [node name="lbl_GenerateResult" type="Label" parent="GENERATION_PANEL"]
-margin_top = 382.0
-margin_right = 765.0
-margin_bottom = 396.0
+margin_top = 555.0
+margin_right = 816.0
+margin_bottom = 569.0
 text = "Default Generate Text"
 align = 1
 
 [node name="btn_Reset" type="Button" parent="GENERATION_PANEL"]
-margin_top = 400.0
-margin_right = 765.0
-margin_bottom = 424.0
+margin_top = 573.0
+margin_right = 816.0
+margin_bottom = 600.0
 disabled = true
 text = "CLEAR ANIMATIONS"
 __meta__ = {

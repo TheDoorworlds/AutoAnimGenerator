@@ -1,15 +1,8 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=19 format=2]
 
-[ext_resource path="res://addons/Autoanim/Scenes/AutoAnimationTree.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/Autoanim/Scenes/AutoAnimationTree.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Characters/TessAnimationData.tres" type="Resource" id=2]
 [ext_resource path="res://addons/Autoanim/CharacterBase/BaseCharacter.gd" type="Script" id=3]
-[ext_resource path="res://addons/Autoanim/CharacterBase/TestAnimData.tres" type="Resource" id=4]
-
-[sub_resource type="CapsuleShape2D" id=2]
-resource_local_to_scene = true
-height = 2.0
-
-[sub_resource type="Animation" id=3]
-resource_name = "RESET"
 
 [sub_resource type="AnimationNodeTimeSeek" id=16]
 
@@ -49,9 +42,9 @@ transitions = [ "Run", "Idle", SubResource( 8 ), "Idle", "Run", SubResource( 9 )
 start_node = "Idle"
 graph_offset = Vector2( -10.0544, 0 )
 
-[sub_resource type="AnimationNodeBlendTree" id=17]
+[sub_resource type="AnimationNodeBlendTree" id=18]
 resource_local_to_scene = true
-graph_offset = Vector2( -137.833, 54 )
+graph_offset = Vector2( -137.833, 123.472 )
 nodes/Seek/node = SubResource( 16 )
 nodes/Seek/position = Vector2( 380, 160 )
 nodes/StateMachine/node = SubResource( 4 )
@@ -59,26 +52,29 @@ nodes/StateMachine/position = Vector2( 180, 160 )
 nodes/output/position = Vector2( 520, 160 )
 node_connections = [ "output", 0, "Seek", "Seek", 0, "StateMachine" ]
 
-[sub_resource type="AnimationNodeStateMachinePlayback" id=18]
+[sub_resource type="AnimationNodeStateMachinePlayback" id=19]
 
-[node name="Character" type="KinematicBody2D"]
+[sub_resource type="CapsuleShape2D" id=20]
+resource_local_to_scene = true
+
+[node name="Tess" type="KinematicBody2D"]
 script = ExtResource( 3 )
-animation_data = ExtResource( 4 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 2 )
+character_name = "Tess"
+animation_data = ExtResource( 2 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-root_node = NodePath("../Sprite")
-anims/RESET = SubResource( 3 )
+
+[node name="AnimationTree" type="AnimationTree" parent="." instance=ExtResource( 1 )]
+tree_root = SubResource( 18 )
+anim_player = NodePath("../AnimationPlayer")
+parameters/Seek/seek_position = 1.0
+parameters/StateMachine/playback = SubResource( 19 )
+parameters/StateMachine/Death/blend_position = Vector2( 0, 0 )
+parameters/StateMachine/Idle/blend_position = Vector2( 0, 0 )
+parameters/StateMachine/Run/blend_position = Vector2( 0, 0 )
+parameters/StateMachine/TakeDamage/blend_position = Vector2( 0, 0 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 20 )
 
 [node name="Sprite" type="Sprite" parent="."]
-
-[node name="AnimationTree" parent="." instance=ExtResource( 2 )]
-tree_root = SubResource( 17 )
-active = true
-parameters/StateMachine/playback = SubResource( 18 )
-parameters/StateMachine/Death/blend_position = Vector2( -0.025878, 0.453925 )
-parameters/StateMachine/Idle/blend_position = Vector2( -0.107209, -0.0443686 )
-parameters/StateMachine/Run/blend_position = Vector2( -0.641405, -0.0511945 )
-parameters/StateMachine/TakeDamage/blend_position = Vector2( -0.462107, 0.481229 )

@@ -12,22 +12,22 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 4 )
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="MAIN_SCROLL_CONTAINER" type="ScrollContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="HBOX_LAYOUT" type="VBoxContainer" parent="ScrollContainer"]
+[node name="HBOX_LAYOUT" type="VBoxContainer" parent="MAIN_SCROLL_CONTAINER"]
 margin_right = 1024.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Panel" type="Panel" parent="ScrollContainer/HBOX_LAYOUT"]
+[node name="HEADER_PANEL" type="Panel" parent="MAIN_SCROLL_CONTAINER/HBOX_LAYOUT"]
 margin_right = 1024.0
 margin_bottom = 30.0
 rect_min_size = Vector2( 0, 30 )
 
-[node name="TITLE_LABEL" type="Label" parent="ScrollContainer/HBOX_LAYOUT/Panel"]
+[node name="TITLE_LABEL" type="Label" parent="MAIN_SCROLL_CONTAINER/HBOX_LAYOUT/HEADER_PANEL"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 rect_min_size = Vector2( 0, 30 )
@@ -35,12 +35,12 @@ text = "AUTOANIM GENERATOR"
 align = 1
 valign = 1
 
-[node name="HSeparator" type="HSeparator" parent="ScrollContainer/HBOX_LAYOUT"]
+[node name="HSeparator" type="HSeparator" parent="MAIN_SCROLL_CONTAINER/HBOX_LAYOUT"]
 margin_top = 34.0
 margin_right = 1024.0
 margin_bottom = 38.0
 
-[node name="GenerateAnimsControl" parent="ScrollContainer/HBOX_LAYOUT" instance=ExtResource( 2 )]
+[node name="GenerateAnimsControl" parent="MAIN_SCROLL_CONTAINER/HBOX_LAYOUT" instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 42.0

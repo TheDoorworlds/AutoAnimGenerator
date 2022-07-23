@@ -4,14 +4,17 @@
 
 [resource]
 resource_local_to_scene = true
-resource_name = "HopperAnimationData"
+resource_name = "TessAnimationData"
 script = ExtResource( 1 )
-character_name = ""
+character_name = "Tess"
 states = [ "Death", "Idle", "Run", "TakeDamage" ]
 spritesheets = [  ]
 character_animations = [ "RESET" ]
-char_file_name = "Hopper.tscn"
+char_file_name = "Tess.tscn"
 states_textures_map = {
 }
 tracks = {
 }
+sprite_height = 0
+sprite_width = 0
+sprite_size = Vector2( 0, 0 )

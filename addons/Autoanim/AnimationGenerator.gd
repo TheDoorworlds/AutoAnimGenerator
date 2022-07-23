@@ -4,7 +4,8 @@ class_name AnimationGenerator extends Node
 ## ENUMS
 enum Directions {SOUTH, SOUTHEAST, EAST, NORTHEAST, NORTH, NORTHWEST, WEST, SOUTHWEST }
 
-# Errors regaring the creation of new characters
+
+# Errors regarding the creation of new characters
 enum CHARACTER_CREATION_ERRORS { 
 	PROBLEM_ADDING_CHARACTER = 0, # GENERIC catch-all error.  Mod author will attempt to track down specific causes and define out all errors.
 	PROBLEM_SAVING_CHARACTER = 1, # Character or Charater Animation Data did not save to the directory properly.
@@ -19,6 +20,7 @@ enum CHARACTER_CREATION_ERRORS {
 signal finished_adding_children_to_new_character
 signal character_succesfully_added(character_name)
 signal character_not_added(reason, originating_script)
+#signal direction_set_chosen(set_number)
 
 ## INTERNAL VARS
 var varsTrackerPath := "res://addons/Autoanim/Resources/AutoAnimVarsTracker.tres"
@@ -31,6 +33,12 @@ var base_character = preload("res://addons/Autoanim/CharacterBase/BaseCharacter.
 
 ## RESOURCE REFERENCES
 var auto_anim_tree_root := preload("res://addons/Autoanim/Resources/AutoAnimationNodeBlendTree.tres")
+
+
+## DEFAULTS - OBTAINED FROM TOOL MENU
+var sprite_height :int = 0 setget set_sprite_height
+var sprite_width :int = 0 setget set_sprite_width
+var direction_set :int = 0 setget set_direction_set
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -68,7 +76,7 @@ func setup_new_character(name :String) -> bool:
 #			emit_signal("finished_adding_children_to_new_character")
 		# Sets character variables on the character
 		new_character.name = name.replace(" ", "")
-		new_character.CharacterName = name
+		new_character.character_name = name
 		new_character.animPlayer = nc_anim_player
 		new_character.animTree = nc_anim_tree
 		new_character.sprite = nc_sprite
@@ -84,6 +92,8 @@ func setup_new_character(name :String) -> bool:
 		var animation_data := AnimationData.new()
 		new_character.animation_data = animation_data
 		new_character.animation_data.resource_local_to_scene = true
+		animation_data.sprite_height = varsTracker.DefaultSpriteHeight
+		animation_data.sprite_width = varsTracker.DefaultSpriteHeight
 		animation_data.resource_name = name.replace(" ", "") + "AnimationData"
 		animation_data.character_name = name
 		animation_data.char_file_name = name.replace(" ","") + ".tscn"
@@ -117,16 +127,16 @@ func setup_new_character(name :String) -> bool:
 		populate_states_adr(new_character)
 		save_character_adr(new_character)
 		save_varsTracker()
-		assert(new_character.animTree, "%s does not have an animTree properly assigned." % new_character.CharacterName)
+		assert(new_character.animTree, "%s does not have an animTree properly assigned." % new_character.character_name)
 		
 	return true
 #		assert(ResourceSaver.save("res://addons/Autoanim/Resources/VarsTracker.gd", varsTracker), "Saving varsTracker failed.")
 
 
 func pack_and_save_character(character :OverworldCharacter) -> bool:
-	var character_name := character.CharacterName
+	var character_name := character.character_name
 	var packed_character = PackedScene.new()
-	var char_filepath := varsTracker.CharacterDirectory.plus_file(character_name.replace(" ", ""))
+	var char_filepath := varsTracker.CharacterDirectory.plus_file(character_name.replace(" ", "") + ".tscn")
 	
 	# Return false if the Character Directory is not set
 	if !varsTracker.CharacterDirectory:
@@ -137,8 +147,9 @@ func pack_and_save_character(character :OverworldCharacter) -> bool:
 	if !packed_character.pack(character) == OK:
 		emit_signal("character_not_added", CHARACTER_CREATION_ERRORS.PROBLEM_PACKING_CHARCTER, self)
 		return false
-		
-	if (ResourceSaver.save(char_filepath + ".tscn", packed_character) == OK):
+	
+	if (ResourceSaver.save(char_filepath, packed_character) == OK):
+		var dir := Directory.new()
 		if !varsTracker.CharacterList.has(character_name):
 			varsTracker.CharacterList.append(character_name)
 			save_varsTracker()
@@ -168,10 +179,12 @@ func create_animation(animation_name :String, character :OverworldCharacter) -> 
 	return new_animation
 	
 func populate_states_adr(character :OverworldCharacter) -> void:
-	var anim_tree :AnimationTree = character.animTree
-	assert(anim_tree, "AnimTree not found on %s" % character.CharacterName)
+	var anim_tree :AnimationTree = character.get_node("AnimationTree")
+	character.animTree = anim_tree
+	assert(anim_tree, "AnimTree not found on %s" % character.character_name)
 	var state_machine :AnimationNodeStateMachine =  anim_tree.tree_root.get_node("StateMachine")
-	var animation_data :AnimationData = ResourceLoader.load(varsTracker.CharacterDirectory.plus_file(character.CharacterName.replace(" ","") + "AnimationData.tres"))
+	var animation_data :AnimationData = ResourceLoader.load(varsTracker.CharacterDirectory.plus_file(character.character_name.replace(" ","") + "AnimationData.tres"))
+	animation_data.states.clear()
 	for prop_dict in state_machine.get_property_list():
 		var prop_name = prop_dict.get('name')
 		if prop_name.find('/node') > -1:
@@ -206,12 +219,51 @@ func generate_animation(animation_name :String, animation_direction :int) -> Ani
 	return anim_to_add
 
 func setup_animation_tree(character :OverworldCharacter) -> void:
-	var anim_tree := character.animTree
+	character.animTree = character.get_node("AnimationTree")
+	var anim_tree = character.animTree
 	anim_tree.tree_root = auto_anim_tree_root
 	anim_tree.active = true
 
+func setup_blend_tree(node :String, directions :Array) -> void:
+	pass
+
+## SAVING FUNCTIONS
 func save_character_adr(character :OverworldCharacter) -> void:
-	assert(ResourceSaver.save(varsTracker.CharacterDirectory.plus_file(character.CharacterName.replace(" ","") + "AnimationData.tres"), character.animation_data) == OK, "SAVING %s AnimationData FAILED" % character.CharacterName)
+	assert(
+		ResourceSaver.save(
+			varsTracker.CharacterDirectory.plus_file(
+				character.character_name.replace(" ","") + "AnimationData.tres"),
+				character.animation_data)
+			== OK,
+		"SAVING %s AnimationData FAILED" % character.character_name)
 
 func save_varsTracker():
 	assert(ResourceSaver.save(varsTrackerPath, varsTracker) == OK, "SAVING varsTracker FAILED")
+
+
+
+## LOAD/SAVE BUG FIX FUNCTIONS
+static func make_random_path(file_type :String) -> String:
+	return "res://addons/Autoanim/Resources/temp/" + str(randi()) + file_type
+	
+static func character_exists(path :String) -> bool:
+	return ResourceLoader.exists(path)
+
+
+## SETTERS AND GETTERS
+func set_sprite_height(value :int) -> void:
+	sprite_height = value
+	varsTracker.DefaultSpriteHeight = value
+	save_varsTracker()
+	
+func set_sprite_width(value :int) -> void:
+	sprite_width = value
+	varsTracker.DefaultSpriteWidth = value
+	save_varsTracker()
+
+func set_direction_set(value :int) -> void:
+	direction_set = value
+	varsTracker.DefaultDirectionSet = value
+#	emit_signal("direction_set_chosen", value)
+	save_varsTracker()
+	

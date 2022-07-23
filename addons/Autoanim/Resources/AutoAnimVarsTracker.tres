@@ -4,7 +4,10 @@
 
 [resource]
 script = ExtResource( 1 )
-CharacterList = [ "Hopper" ]
+CharacterList = [ "Test", "Tess" ]
 AnimationStatesList = [ "Idle", "Run", "TakeDamage", "Death", "Harvest" ]
 CharacterDirectory = "res://Characters"
 AssetDirectory = "res://Assets/Characters"
+DefaultSpriteHeight = 96
+DefaultSpriteWidth = 96
+DefaultDirectionSet = 2

@@ -1,0 +1,158 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://addons/Autoanim/Resources/Theme/AutoAnimTheme.tres" type="Theme" id=1]
+[ext_resource path="res://addons/Autoanim/Scenes/ToolMenuDefaultsInterface.gd" type="Script" id=2]
+[ext_resource path="res://addons/Autoanim/Resources/notosans/NotoSans-Regular.ttf" type="DynamicFontData" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 12
+extra_spacing_top = -4
+extra_spacing_bottom = -4
+font_data = ExtResource( 3 )
+
+[node name="ToolMenuDefaultsInterface" type="PopupPanel"]
+visible = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 275.0
+margin_top = 178.0
+margin_right = -276.0
+margin_bottom = -178.0
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = -4.0
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 5
+
+[node name="VBOX_MAIN" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 460.0
+margin_bottom = 231.0
+
+[node name="HEADER" type="Label" parent="MarginContainer/VBOX_MAIN"]
+margin_right = 455.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+text = "AUTOANIM DEFAULTS"
+align = 1
+valign = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBOX_MAIN"]
+margin_top = 24.0
+margin_right = 455.0
+margin_bottom = 28.0
+
+[node name="HBOX_DIRECIONSET" type="HBoxContainer" parent="MarginContainer/VBOX_MAIN"]
+margin_left = 98.0
+margin_top = 32.0
+margin_right = 356.0
+margin_bottom = 59.0
+size_flags_horizontal = 4
+
+[node name="LBL_DIRECTIONSET" type="Label" parent="MarginContainer/VBOX_MAIN/HBOX_DIRECIONSET"]
+margin_top = 6.0
+margin_right = 99.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Direction Set:   "
+align = 2
+valign = 1
+
+[node name="opt_DirectionSet" type="OptionButton" parent="MarginContainer/VBOX_MAIN/HBOX_DIRECIONSET"]
+margin_left = 103.0
+margin_right = 258.0
+margin_bottom = 27.0
+size_flags_horizontal = 7
+text = "4 - Direction, Top-Down"
+items = [ "4 - Direction, Top-Down", null, false, 0, null, "4 - Direction, Isometric", null, false, 1, null, "8 - Direction, Top-Down", null, false, 2, null, "2 - Direction, Platformer", null, false, 3, null ]
+selected = 0
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBOX_MAIN"]
+modulate = Color( 0.447059, 0.447059, 0.447059, 1 )
+margin_top = 63.0
+margin_right = 455.0
+margin_bottom = 67.0
+
+[node name="SPRITE_HINT" type="Label" parent="MarginContainer/VBOX_MAIN"]
+margin_top = 71.0
+margin_right = 455.0
+margin_bottom = 101.0
+rect_min_size = Vector2( 0, 30 )
+custom_colors/font_color = Color( 0.423529, 0.423529, 0.423529, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Please provide the default size you want your sprite to be.
+(i.e. the width and height of one frame)"
+align = 1
+autowrap = true
+
+[node name="HBOX_SPRITESIZE" type="HBoxContainer" parent="MarginContainer/VBOX_MAIN"]
+margin_left = 41.0
+margin_top = 105.0
+margin_right = 413.0
+margin_bottom = 129.0
+size_flags_horizontal = 4
+
+[node name="SPRITE_HEIGHT" type="Label" parent="MarginContainer/VBOX_MAIN/HBOX_SPRITESIZE"]
+margin_top = 2.0
+margin_right = 87.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+text = "Sprite Height:"
+align = 2
+valign = 1
+
+[node name="spin_SpriteHeight" type="SpinBox" parent="MarginContainer/VBOX_MAIN/HBOX_SPRITESIZE"]
+margin_left = 91.0
+margin_right = 165.0
+margin_bottom = 24.0
+suffix = "px"
+
+[node name="SPRITE_WIDTH" type="Label" parent="MarginContainer/VBOX_MAIN/HBOX_SPRITESIZE"]
+margin_left = 169.0
+margin_top = 2.0
+margin_right = 268.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 0, 20 )
+text = "    Sprite Width:"
+valign = 1
+
+[node name="spin_SpriteWidth" type="SpinBox" parent="MarginContainer/VBOX_MAIN/HBOX_SPRITESIZE"]
+margin_left = 272.0
+margin_right = 372.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 100, 20 )
+suffix = "px"
+
+[node name="btn_OpenBaseCharacter" type="Button" parent="MarginContainer/VBOX_MAIN"]
+margin_left = 144.0
+margin_top = 133.0
+margin_right = 311.0
+margin_bottom = 160.0
+size_flags_horizontal = 4
+text = "Open Base Character Scene"
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBOX_MAIN"]
+modulate = Color( 0.447059, 0.447059, 0.447059, 1 )
+margin_top = 164.0
+margin_right = 455.0
+margin_bottom = 168.0
+
+[node name="btn_Close" type="Button" parent="MarginContainer/VBOX_MAIN"]
+margin_left = 186.0
+margin_top = 172.0
+margin_right = 269.0
+margin_bottom = 199.0
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Save & Close"
